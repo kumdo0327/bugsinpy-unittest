@@ -8,7 +8,9 @@ def format_testcase(input_string):
     parts = input_string.split(" (")
     test_method = parts[0]
     test_class = parts[1].rstrip(")")
-    transformed_string = f"test.{test_class}.{test_method}"
+    arg = sys.argv[1]
+
+    transformed_string = f"{arg}.{test_class}.{test_method}"
     return transformed_string
 
 def subcall(suite):
@@ -20,7 +22,7 @@ def subcall(suite):
 
         testcase = format_testcase(str(suite))
         subprocess.call(['coverage', 'run', '-m', 'unittest', '-q', testcase])
-        subprocess.call(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', '--omit=test/*.py'])
+        subprocess.call(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', f'--omit={sys.argv[1]}/*.py'])
 
         result = suite.run()
         with open(f'coverage/{global_counter}/{global_counter}.output', 'w') as f:
