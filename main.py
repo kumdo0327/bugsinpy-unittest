@@ -1,6 +1,7 @@
 import unittest
 import subprocess
 import sys
+import os
 
 global_counter = 1
 
@@ -22,20 +23,20 @@ def subcall(suite):
         global global_counter
 
         testcase = format_testcase(str(suite))
-        print(f"Testing... >>> {testcase}")
-        print(issubclass(type(suite), unittest.TestSuite))
-        result = suite.run()
-        print(f"wasSuccessful = {result.wasSuccessful()}")
-
+        print(f">> {testcase}")
         subprocess.call(['coverage', 'run', '-m', 'unittest', '-q', testcase])
         subprocess.call(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', f'--omit={sys.argv[1]}/*.py'])
-        #with open(f'coverage/{global_counter}/{global_counter}.output', 'w') as f:
-        #    for _, traceback in result.errors:
-        #        f.write(traceback)
-        with open(f'coverage/{global_counter}/{global_counter}.test', 'w') as f:
-            f.write('passed' if result.wasSuccessful() else 'failed')
+        
+        if os.path.exists(f'coverage/{global_counter}/summary.json'):
+            result = suite.run()
+            with open(f'coverage/{global_counter}/{global_counter}.test', 'w') as f:
+                f.write('passed' if result.wasSuccessful() else 'failed')
 
-        global_counter += 1
+            #with open(f'coverage/{global_counter}/{global_counter}.output', 'w') as f:
+            #    for _, traceback in result.errors:
+            #        f.write(traceback)
+
+            global_counter += 1
 
 
 
