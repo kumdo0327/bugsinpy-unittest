@@ -23,7 +23,7 @@ def subcall(suite):
 
         testcase = format_testcase(str(suite))
         print(f"Testing... >>> {testcase}")
-        print(issubclass(unittest.TestCase, suite))
+        print(issubclass(suite, unittest.TestCase))
         result = suite.run()
         print(f"wasSuccessful = {result.wasSuccessful()}")
 
