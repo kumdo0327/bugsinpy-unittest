@@ -10,10 +10,9 @@ def format_testcase(input_string):
     test_class = parts[1].rstrip(")")
     arg = sys.argv[1]
 
-    transformed_string = f"{arg}.{test_class}.{test_method}"
-    print(test_class)
-    print('>> format :', transformed_string)
-    return transformed_string
+    if test_class.starts_with('unittest.'):
+        return f"{test_class}.{test_method}"
+    return f"{arg}.{test_class}.{test_method}"
 
 def subcall(suite):
     if hasattr(suite, '__iter__'):
