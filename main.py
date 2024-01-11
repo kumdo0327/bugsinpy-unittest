@@ -23,7 +23,7 @@ def subcall(suite):
 
         testcase = format_testcase(str(suite))
         print(f"Testing... >>> {testcase}")
-        result = suite.defaultTestResult()
+        result = suite.run()
         print(f"wasSuccessful = {result.wasSuccessful()}")
 
         subprocess.call(['coverage', 'run', '-m', 'unittest', '-q', testcase])
