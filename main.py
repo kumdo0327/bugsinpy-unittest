@@ -20,12 +20,12 @@ def subcall(suite):
     else:
         global global_counter
 
-        print(type(suite))
+        print(suite)
+        result = suite.run()
+
         testcase = format_testcase(str(suite))
         subprocess.call(['coverage', 'run', '-m', 'unittest', '-q', testcase])
         subprocess.call(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', f'--omit={sys.argv[1]}/*.py'])
-
-        result = suite.run()
         #with open(f'coverage/{global_counter}/{global_counter}.output', 'w') as f:
         #    for _, traceback in result.errors:
         #        f.write(traceback)
