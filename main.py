@@ -22,8 +22,7 @@ def subcall(suite):
         global global_counter
 
         print(suite)
-        result = unittest.TestResult
-        suite.run(result)
+        result = suite.defaultTestResult()
 
         testcase = format_testcase(str(suite))
         subprocess.call(['coverage', 'run', '-m', 'unittest', '-q', testcase])
