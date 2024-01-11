@@ -10,7 +10,7 @@ def format_testcase(input_string):
     test_class = parts[1].rstrip(")")
     arg = sys.argv[1]
 
-    if test_class.starts_with('unittest.'):
+    if test_class.startswith('unittest.'):
         return f"{test_class}.{test_method}"
     return f"{arg}.{test_class}.{test_method}"
 
