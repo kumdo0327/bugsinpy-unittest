@@ -11,6 +11,7 @@ def format_testcase(input_string):
     arg = sys.argv[1]
 
     transformed_string = f"{arg}.{test_class}.{test_method}"
+    print(test_class)
     print('>> format :', transformed_string)
     return transformed_string
 
