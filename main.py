@@ -22,9 +22,9 @@ def subcall(suite, omission):
         global global_counter
 
         testcase = format_testcase(str(suite))
-        print(f'coverage run -m unittest -q {testcase}')
+        print(f'>> coverage run -m unittest -q {testcase}')
         os.system(f'coverage run -m unittest -q {testcase}')
-        print(f'coverage json -o coverage/{global_counter}/summary.json --omit="{omission}"')
+        print(f'>> coverage json -o coverage/{global_counter}/summary.json --omit="{omission}"')
         os.system(f'coverage json -o coverage/{global_counter}/summary.json --omit="{omission}"')
         
         if os.path.exists(f'coverage/{global_counter}/summary.json'):
