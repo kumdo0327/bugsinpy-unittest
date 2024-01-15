@@ -24,9 +24,9 @@ def subcall(suite, omission):
 
         testcase = format_testcase(str(suite))
         print('coverage', 'run', '-m', 'unittest', '-q', testcase)
-        subprocess.call(['coverage', 'run', '-m', 'unittest', '-q', testcase])
-        print('coverage', 'json', f'--omit="{omission}"', '-o', f"coverage/{global_counter}/summary.json")
-        subprocess.call(['coverage', 'json', f'--omit="{omission}"', '-o', f"coverage/{global_counter}/summary.json"])
+        subprocess.call(['coverage', 'run', '-m', 'unittest', '-q', testcase], shell=True, executable='/bin/bash')
+        print('coverage', 'json', '-o', f"coverage/{global_counter}/summary.json", f'--omit="{omission}"')
+        subprocess.call(['coverage', 'json', '-o', f"coverage/{global_counter}/summary.json", f'--omit="{omission}"'], shell=True, executable='/bin/bash')
         
         if os.path.exists(f'coverage/{global_counter}/summary.json'):
             result = suite.run()
