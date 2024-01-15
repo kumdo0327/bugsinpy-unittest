@@ -13,7 +13,7 @@ def format_testcase(input_string):
 
     if test_class.startswith('unittest.'):
         return f"{test_class}.{test_method}"
-    return f"{arg}.{test_class}.{test_method}"
+    return f"{arg.replace('/', '.')}.{test_class}.{test_method}"
 
 def subcall(suite):
     if hasattr(suite, '__iter__'):
