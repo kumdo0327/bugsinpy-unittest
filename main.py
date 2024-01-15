@@ -18,7 +18,7 @@ def format_testcase(input_string):
 def subcall(suite, omission):
     if hasattr(suite, '__iter__'):
         for x in suite:
-            subcall(x)
+            subcall(x, omission)
     else:
         global global_counter
 
