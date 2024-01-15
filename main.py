@@ -15,7 +15,7 @@ def format_testcase(input_string):
         return f"{test_class}.{test_method}"
     return f"{arg.replace('/', '.')}.{test_class}.{test_method}"
 
-def subcall(suite):
+def subcall(suite, omission):
     if hasattr(suite, '__iter__'):
         for x in suite:
             subcall(x)
@@ -25,7 +25,7 @@ def subcall(suite):
         testcase = format_testcase(str(suite))
         print(f">> {testcase}")
         subprocess.call(['coverage', 'run', '-m', 'unittest', '-q', testcase])
-        subprocess.call(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', f'--omit={sys.argv[1]}/*.py'])
+        subprocess.call(['coverage', 'json', '-o', f"coverage/{global_counter}/summary.json", f'--omit="{omission}"'])
         
         if os.path.exists(f'coverage/{global_counter}/summary.json'):
             result = suite.run()
@@ -41,4 +41,10 @@ def subcall(suite):
 
 
 if __name__ == '__main__':
-    subcall(unittest.defaultTestLoader.discover(sys.argv[1]))
+    omission = "/usr/local/lib/*,"
+    for arg in sys.argv[1:]:
+        omission = omission + os.path.join(arg, '*,')
+    if omission.endswith(','):
+        omission = omission[:-1]
+
+    subcall(unittest.defaultTestLoader.discover(sys.argv[1]), omission)
