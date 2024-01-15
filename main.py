@@ -23,8 +23,9 @@ def subcall(suite, omission):
         global global_counter
 
         testcase = format_testcase(str(suite))
-        print(f">> {testcase}")
+        print('coverage', 'run', '-m', 'unittest', '-q', testcase)
         subprocess.call(['coverage', 'run', '-m', 'unittest', '-q', testcase])
+        print('coverage', 'json', '-o', f"coverage/{global_counter}/summary.json", f'--omit="{omission}"')
         subprocess.call(['coverage', 'json', '-o', f"coverage/{global_counter}/summary.json", f'--omit="{omission}"'])
         
         if os.path.exists(f'coverage/{global_counter}/summary.json'):
@@ -46,6 +47,5 @@ if __name__ == '__main__':
         omission = omission + os.path.join(arg, '*,')
     if omission.endswith(','):
         omission = omission[:-1]
-    print('--omit=', f'"{omission}"')
 
     subcall(unittest.defaultTestLoader.discover(sys.argv[1]), omission)
