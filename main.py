@@ -46,6 +46,6 @@ if __name__ == '__main__':
         omission = omission + os.path.join(arg, '*,')
     if omission.endswith(','):
         omission = omission[:-1]
-    print('omitted dir =', omission.replace(',', '  '))
+    print('--omit=', f'"{omission}"')
 
     subcall(unittest.defaultTestLoader.discover(sys.argv[1]), omission)
