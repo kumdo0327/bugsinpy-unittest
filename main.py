@@ -28,11 +28,9 @@ class TestResultCollector(unittest.TextTestResult):
 
 def discover_and_run_tests():
     suite = unittest.defaultTestLoader.discover('.')
+    result = unittest.TextTestRunner(resultclass=TestResultCollector).run(suite)
 
-    result_collector = TestResultCollector(stream=sys.stderr, descriptions=False, verbosity=2)
-    unittest.TextTestRunner(result=result_collector).run(suite)
-
-    for test, status in result_collector.test_results:
+    for test, status in result.test_results:
         print(f"{test.id()}: {status}")
 
 
