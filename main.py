@@ -27,7 +27,7 @@ class TestResultCollector(unittest.TextTestResult):
 
 
 def discover_and_run_tests():
-    suite = unittest.defaultTestLoader.discover()
+    suite = unittest.defaultTestLoader.discover('.')
 
     result_collector = TestResultCollector(verbosity=2)
     unittest.TextTestRunner(result=result_collector).run(suite)
