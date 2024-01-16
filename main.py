@@ -13,16 +13,16 @@ class TestResultCollector(unittest.TextTestResult):
         self.test_results = []
 
     def addSuccess(self, test):
-        self.test_results.append((test, 'Passed'))
+        self.test_results.append((test, 'passed'))
 
     def addSkip(self, test, reason):
-        self.test_results.append((test, 'Skipped'))
+        self.test_results.append((test, 'skipped'))
 
     def addFailure(self, test, err):
-        self.test_results.append((test, 'Failed'))
+        self.test_results.append((test, 'failed'))
 
     def addError(self, test, err):
-        self.test_results.append((test, 'Error'))
+        self.test_results.append((test, 'error'))
 
 
 
@@ -30,8 +30,23 @@ def discover_and_run_tests():
     suite = unittest.defaultTestLoader.discover('.')
     result = unittest.TextTestRunner(resultclass=TestResultCollector).run(suite)
 
+    p = 0
+    s = 0
+    f = 0
+    e = 0
     for test, status in result.test_results:
         print(f"{test.id()}: {status}")
+        if status is 'passed':
+            p += 1
+        if status is 'skipped':
+            s += 1
+        if status is 'failed':
+            f += 1
+        if status is 'error':
+            e += 1
+    print(len(test.test_results))
+    print(p, s, f, e)
+
 
 
 
