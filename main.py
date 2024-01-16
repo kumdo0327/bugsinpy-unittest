@@ -8,8 +8,8 @@ global_counter = 1
 
 
 class TestResultCollector(unittest.TextTestResult):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, stream, descriptions, verbosity):
+        super().__init__(stream, descriptions, verbosity)
         self.test_results = []
 
     def addSuccess(self, test):
@@ -29,7 +29,7 @@ class TestResultCollector(unittest.TextTestResult):
 def discover_and_run_tests():
     suite = unittest.defaultTestLoader.discover('.')
 
-    result_collector = TestResultCollector(verbosity=2)
+    result_collector = TestResultCollector(stream=sys.stderr, descriptions=False, verbosity=2)
     unittest.TextTestRunner(result=result_collector).run(suite)
 
     for test, status in result_collector.test_results:
