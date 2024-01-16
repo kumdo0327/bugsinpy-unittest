@@ -10,92 +10,60 @@ global_counter = 1
 class TestResultCollector(unittest.TextTestResult):
     def __init__(self, stream, descriptions, verbosity):
         super().__init__(stream, descriptions, verbosity)
-        self.test_results = []
+        self.test_results = list()
 
     def addSuccess(self, test):
-        self.test_results.append((test, 'passed'))
+        self.test_results.append((test.id(), 'passed'))
 
     def addSkip(self, test, reason):
-        self.test_results.append((test, 'skipped'))
+        self.test_results.append((test.id(), 'skipped'))
 
     def addFailure(self, test, err):
-        self.test_results.append((test, 'failed'))
+        self.test_results.append((test.id(), 'failed'))
 
     def addError(self, test, err):
-        self.test_results.append((test, 'error'))
+        self.test_results.append((test.id(), 'error'))
 
 
 
-def discover_and_run_tests():
-    suite = unittest.defaultTestLoader.discover('.')
-    result = unittest.TextTestRunner(resultclass=TestResultCollector).run(suite)
-
-    p = 0
-    s = 0
-    f = 0
-    e = 0
-    for test, status in result.test_results:
-        print(f"{test.id()}: {status}")
-        if status is 'passed':
-            p += 1
-        if status is 'skipped':
-            s += 1
-        if status is 'failed':
-            f += 1
-        if status is 'error':
-            e += 1
-    print(len(result.test_results))
-    print(p, s, f, e)
+def runUnittest() -> list:
+    return unittest.TextTestRunner(resultclass=TestResultCollector).run(unittest.defaultTestLoader.discover('.')).test_results
 
 
 
+def commandCoverage(test_id, omission, text):
+    global global_counter
 
-def format_testcase(input_string):
-    parts = input_string.split(" (")
-    test_method = parts[0]
-    test_class = parts[1].rstrip(")")
-    arg = sys.argv[1]
-
-    if test_class.startswith('unittest.'):
-        return f"{test_class}.{test_method}"
-    return f"{arg.replace('/', '.')}.{test_class}.{test_method}"
-
+    print(f'\n>> >> Run Coverage {global_counter} : "{test_id}"')
+    subprocess.run(['coverage', 'run', '-m', 'unittest', '-q', test_id])
+    print(f'\n>> >> Wrote Json {global_counter} : "{test_id}"')
+    subprocess.run(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', '--omit', omission])
+    
+    with open(f'coverage/{global_counter}/{global_counter}.test', 'w') as f:
+        f.write(text)
+    global_counter += 1
 
 
-def subcall(suite, omission):
-    if hasattr(suite, '__iter__'):
-        for x in suite:
-            subcall(x, omission)
-    else:
-        global global_counter
 
-        testcase = format_testcase(str(suite))
-        print(f'\n>> >> Run Coverage {global_counter} : "{testcase}"')
-        subprocess.run(['coverage', 'run', '-m', 'unittest', '-q', testcase]).returncode
-
-        print(f'\n>> >> Wrote Json {global_counter} : "{testcase}"')
-        subprocess.run(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', '--omit', omission])
-        
-        if os.path.exists(f'coverage/{global_counter}/summary.json'):
-            result = suite.run()
-            with open(f'coverage/{global_counter}/{global_counter}.test', 'w') as f:
-                f.write('passed' if result.wasSuccessful() else 'failed')
-
-            global_counter += 1
+def runCoverage(test_id, report, omission):
+    if report is 'skipped' or report is 'error':
+        return
+    if report is 'passed':
+        commandCoverage(test_id, omission, 'passed')
+    elif report is 'failed':
+        commandCoverage(test_id, omission, 'failed')
 
 
 
 def main():
-    discover_and_run_tests()
-    return
-
     omission = "/usr/local/lib/*,"
     for arg in sys.argv[1:]:
         omission = omission + os.path.join(arg, '*,')
     if omission.endswith(','):
         omission = omission[:-1]
 
-    subcall(unittest.defaultTestLoader.discover(), omission)
+    for test_id, report in runUnittest():
+        runCoverage(test_id, report, omission)
 
 
 
