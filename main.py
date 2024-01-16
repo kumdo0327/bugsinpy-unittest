@@ -44,7 +44,7 @@ def discover_and_run_tests():
             f += 1
         if status is 'error':
             e += 1
-    print(len(test.test_results))
+    print(len(result.test_results))
     print(p, s, f, e)
 
 
@@ -80,10 +80,6 @@ def subcall(suite, omission):
             result = suite.run()
             with open(f'coverage/{global_counter}/{global_counter}.test', 'w') as f:
                 f.write('passed' if result.wasSuccessful() else 'failed')
-
-            #with open(f'coverage/{global_counter}/{global_counter}.output', 'w') as f:
-            #    for _, traceback in result.errors:
-            #        f.write(traceback)
 
             global_counter += 1
 
