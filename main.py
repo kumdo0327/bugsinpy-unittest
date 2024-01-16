@@ -1,8 +1,41 @@
 import unittest
 import sys
 import os
+import subprocess
+
 
 global_counter = 1
+
+
+class TestResultCollector(unittest.TextTestResult):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.test_results = []
+
+    def addSuccess(self, test):
+        self.test_results.append((test, 'Passed'))
+
+    def addSkip(self, test, reason):
+        self.test_results.append((test, 'Skipped'))
+
+    def addFailure(self, test, err):
+        self.test_results.append((test, 'Failed'))
+
+    def addError(self, test, err):
+        self.test_results.append((test, 'Error'))
+
+
+
+def discover_and_run_tests():
+    suite = unittest.defaultTestLoader.discover()
+
+    result_collector = TestResultCollector(verbosity=2)
+    unittest.TextTestRunner(result=result_collector).run(suite)
+
+    for test, status in result_collector.test_results:
+        print(f"{test.id()}: {status}")
+
+
 
 def format_testcase(input_string):
     parts = input_string.split(" (")
@@ -14,6 +47,8 @@ def format_testcase(input_string):
         return f"{test_class}.{test_method}"
     return f"{arg.replace('/', '.')}.{test_class}.{test_method}"
 
+
+
 def subcall(suite, omission):
     if hasattr(suite, '__iter__'):
         for x in suite:
@@ -22,10 +57,11 @@ def subcall(suite, omission):
         global global_counter
 
         testcase = format_testcase(str(suite))
-        print(f'>> coverage run -m unittest -q {testcase}')
-        os.system(f'coverage run -m unittest -q {testcase}')
-        print(f'>> coverage json -o coverage/{global_counter}/summary.json --omit="{omission}"')
-        os.system(f'coverage json -o coverage/{global_counter}/summary.json --omit="{omission}"')
+        print(f'\n>> >> Run Coverage {global_counter} : "{testcase}"')
+        subprocess.run(['coverage', 'run', '-m', 'unittest', '-q', testcase]).returncode
+
+        print(f'\n>> >> Wrote Json {global_counter} : "{testcase}"')
+        subprocess.run(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', '--omit', omission])
         
         if os.path.exists(f'coverage/{global_counter}/summary.json'):
             result = suite.run()
@@ -40,11 +76,19 @@ def subcall(suite, omission):
 
 
 
-if __name__ == '__main__':
+def main():
+    discover_and_run_tests()
+    return
+
     omission = "/usr/local/lib/*,"
     for arg in sys.argv[1:]:
         omission = omission + os.path.join(arg, '*,')
     if omission.endswith(','):
         omission = omission[:-1]
 
-    subcall(unittest.defaultTestLoader.discover(sys.argv[1]), omission)
+    subcall(unittest.defaultTestLoader.discover(), omission)
+
+
+
+if __name__ == '__main__':
+    main()
