@@ -34,6 +34,7 @@ def runUnittest() -> list:
 def commandCoverage(test_id, omission, text):
     global global_counter
 
+    print(f'\n>> >> ExitCode is {text}')
     print(f'\n>> >> Run Coverage {global_counter} : "{test_id}"')
     subprocess.run(['coverage', 'run', '-m', 'unittest', '-q', test_id])
     print(f'\n>> >> Wrote Json {global_counter} : "{test_id}"')
