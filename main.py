@@ -63,6 +63,8 @@ def main():
     if omission.endswith(','):
         omission = omission[:-1]
 
+    print('\n>\n>\n>\n>\n>')
+    print(runUnittest()[0][0])
     for test_id, report in runUnittest():
         runCoverage(test_id, report, omission)
 
