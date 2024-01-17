@@ -40,9 +40,10 @@ def commandCoverage(test_id, omission, text):
     print(f'\n>> >> Wrote Json {global_counter} : "{test_id}"')
     subprocess.run(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', '--omit', omission])
     
-    with open(f'coverage/{global_counter}/{global_counter}.test', 'w') as f:
-        f.write(text)
-    global_counter += 1
+    if os.path.exists(f'coverage/{global_counter}/summary.json'):
+        with open(f'coverage/{global_counter}/{global_counter}.test', 'w') as f:
+            f.write(text)
+        global_counter += 1
 
 
 
