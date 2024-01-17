@@ -66,6 +66,7 @@ def main():
     test_id = runUnittest()[0][0]
     print('\n>\n>\n>\n>\n>')
     print(test_id)
+    return
     for test_id, report in runUnittest():
         runCoverage(test_id, report, omission)
 
