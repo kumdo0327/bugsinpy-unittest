@@ -2,6 +2,7 @@ import unittest
 import sys
 import os
 import subprocess
+import shutil
 
 
 global_counter = 1
@@ -27,23 +28,25 @@ class TestResultCollector(unittest.TextTestResult):
 
 
 def runUnittest() -> list:
-    return unittest.TextTestRunner(resultclass=TestResultCollector).run(unittest.defaultTestLoader.discover('.')).test_results
+    return unittest.TextTestRunner(resultclass=TestResultCollector).run(unittest.defaultTestLoader.discover(sys.argv[1])).test_results
 
 
 
 def commandCoverage(test_id, omission, text):
     global global_counter
 
-    print(f'\n>> >> ExitCode is {text}')
-    print(f'\n>> >> Run Coverage {global_counter} : "{test_id}"')
+    print(f'\n===> ExitCode is {text}')
+    print(f'\n===> Run Coverage {global_counter} : "{test_id}"')
     subprocess.run(['coverage', 'run', '-m', 'unittest', '-q', test_id])
-    print(f'\n>> >> Wrote Json {global_counter} : "{test_id}"')
+    print(f'\n===> Wrote Json {global_counter} : "{test_id}"')
     subprocess.run(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', '--omit', omission])
     
     if os.path.exists(f'coverage/{global_counter}/summary.json'):
         with open(f'coverage/{global_counter}/{global_counter}.test', 'w') as f:
             f.write(text)
         global_counter += 1
+    else:
+        shutil.rmtree(f'coverage/{global_counter}')
 
 
 
