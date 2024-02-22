@@ -28,7 +28,7 @@ class TestResultCollector(unittest.TextTestResult):
 
 
 def runUnittest() -> list:
-    return unittest.TextTestRunner(resultclass=TestResultCollector).run(unittest.defaultTestLoader.discover(sys.argv[1])).test_results
+    return unittest.TextTestRunner(resultclass=TestResultCollector).run(unittest.defaultTestLoader.discover('.')).test_results
 
 
 
@@ -62,7 +62,7 @@ def runCoverage(test_id, report, omission):
 
 def main():
     omission = "/usr/local/lib/*,"
-    for arg in sys.argv[2:]:
+    for arg in sys.argv[1:]:
         omission = omission + os.path.join(arg, '*,')
     if omission.endswith(','):
         omission = omission[:-1]
