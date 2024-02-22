@@ -28,7 +28,7 @@ class TestResultCollector(unittest.TextTestResult):
 
 
 def runUnittest() -> list:
-    return unittest.TextTestRunner(resultclass=TestResultCollector).run(unittest.defaultTestLoader.discover(sys.argv[1])).test_results
+    return unittest.TextTestRunner(resultclass=TestResultCollector).run(unittest.defaultTestLoader.discover('.')).test_results
 
 
 
