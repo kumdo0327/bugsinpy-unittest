@@ -31,7 +31,7 @@ class TestResultCollector(unittest.TextTestResult):
         self.test_results.append((test.id(), 'error'))
 
     def detectUnsolvableError(self, msg: str) -> bool:
-        return 'HTTP Error' in msg or 'Unable to extract title' in msg
+        return 'Unable to download' in msg or 'Unable to extract title' in msg
 
 
 
