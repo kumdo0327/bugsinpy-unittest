@@ -55,7 +55,9 @@ class TestResultCollector(unittest.TextTestResult):
             self.test_results.append((test.id(), 'error'))
 
     def detectUnsolvableError(self, msg: str) -> bool:
-        return 'please report this issue on https://yt-dl.org/bug' in msg
+        return 'unable to download' in msg or\
+                'unable to extract' in msg or\
+                'please report this issue on https://yt-dl.org/bug' in msg
 
 
 
