@@ -36,10 +36,10 @@ class TestResultCollector(unittest.TextTestResult):
         print('===============================================')
         print(msg)
         print('===============================================')
-        print('Unable to download' in msg or'Unable to extract title' in msg)
+        print('Unable to download' in msg or 'Unable to extract' in msg)
         print('>\tEND\n')
         
-        return 'Unable to download' in msg or'Unable to extract title' in msg
+        return 'Unable to download' in msg or 'Unable to extract' in msg
 
 
 
