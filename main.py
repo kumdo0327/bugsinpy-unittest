@@ -65,11 +65,11 @@ def commandCoverage(test_id, omission, text):
 
 
 def runCoverage(test_id, report, omission):
-    if report == 'skipped' or report == 'error':
+    if report == 'skipped':
         return
     if report == 'passed':
         commandCoverage(test_id, omission, 'passed')
-    elif report == 'failed':
+    elif report == 'failed' or report == 'error':
         commandCoverage(test_id, omission, 'failed')
 
 
