@@ -37,22 +37,18 @@ class TestResultCollector(unittest.TextTestResult):
         super().stopTest(test)
 
     def addSuccess(self, test):
-        print(test.id(), '> passed')
         self.test_results.append((test.id(), 'passed'))
 
     def addSkip(self, test, reason):
-        print(test.id(), '> skipeed')
         self.test_results.append((test.id(), 'skipped'))
 
     def addFailure(self, test, err):
-        print(test.id(), '> failed')
         if self.detectUnsolvableError(self._exc_info_to_string(err, test)):
             self.test_results.append((test.id(), 'skipped'))
         else:
             self.test_results.append((test.id(), 'failed'))
 
     def addError(self, test, err):
-        print(test.id(), '> error')
         if self.detectUnsolvableError(self._exc_info_to_string(err, test)):
             self.test_results.append((test.id(), 'skipped'))
         else:
