@@ -20,10 +20,18 @@ class TestResultCollector(unittest.TextTestResult):
         self.test_results.append((test.id(), 'skipped'))
 
     def addFailure(self, test, err):
-        self.test_results.append((test.id(), 'failed'))
+        if self.detectHTTP410(self._exc_info_to_string(err, test)):
+            self.test_results.append((test.id(), 'skipped'))
+        else:
+            self.test_results.append((test.id(), 'failed'))
 
     def addError(self, test, err):
+        if self.detectHTTP410(self._exc_info_to_string(err, test)):
+            self.test_results.append((test.id(), 'skipped'))
         self.test_results.append((test.id(), 'error'))
+
+    def detectHTTP410(self, msg: str) -> bool:
+        return 'HTTP Error 410: Gone' in msg
 
 
 
