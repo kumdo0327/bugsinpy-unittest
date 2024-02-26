@@ -49,7 +49,7 @@ class TestResultCollector(unittest.TextTestResult):
             self.test_results.append((test.id(), 'failed'))
 
     def addError(self, test, err):
-        if self.detectUnsolvableError(self._exc_info_to_string(err, test).lowe()):
+        if self.detectUnsolvableError(self._exc_info_to_string(err, test).lower()):
             self.test_results.append((test.id(), 'skipped'))
         else:
             self.test_results.append((test.id(), 'error'))
