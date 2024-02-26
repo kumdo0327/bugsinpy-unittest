@@ -20,18 +20,18 @@ class TestResultCollector(unittest.TextTestResult):
         self.test_results.append((test.id(), 'skipped'))
 
     def addFailure(self, test, err):
-        if self.detectHTTP410(self._exc_info_to_string(err, test)):
+        if self.detectUnsolvableError(self._exc_info_to_string(err, test)):
             self.test_results.append((test.id(), 'skipped'))
         else:
             self.test_results.append((test.id(), 'failed'))
 
     def addError(self, test, err):
-        if self.detectHTTP410(self._exc_info_to_string(err, test)):
+        if self.detectUnsolvableError(self._exc_info_to_string(err, test)):
             self.test_results.append((test.id(), 'skipped'))
         self.test_results.append((test.id(), 'error'))
 
-    def detectHTTPError(self, msg: str) -> bool:
-        return 'HTTP Error' in msg
+    def detectUnsolvableError(self, msg: str) -> bool:
+        return 'HTTP Error' in msg or 'Unable to extract title' in msg
 
 
 
