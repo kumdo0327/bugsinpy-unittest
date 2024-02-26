@@ -28,7 +28,8 @@ class TestResultCollector(unittest.TextTestResult):
     def addError(self, test, err):
         if self.detectUnsolvableError(self._exc_info_to_string(err, test)):
             self.test_results.append((test.id(), 'skipped'))
-        self.test_results.append((test.id(), 'error'))
+        else:
+            self.test_results.append((test.id(), 'error'))
 
     def detectUnsolvableError(self, msg: str) -> bool:
         print('\n>\tBEGIN')
@@ -36,7 +37,8 @@ class TestResultCollector(unittest.TextTestResult):
         print(msg)
         print('===============================================')
         print('>\tEND\n')
-        return 'Unable to download' in msg or 'Unable to extract title' in msg
+        print('Unable to download' in msg or'Unable to extract title' in msg)
+        return 'Unable to download' in msg or'Unable to extract title' in msg
 
 
 
