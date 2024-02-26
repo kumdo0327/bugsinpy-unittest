@@ -77,11 +77,11 @@ def runUnittest() -> list:
         dist[2] += 1 if test_result == 'skipped' else 0
         dist[3] += 1 if test_result == 'error' else 0
         if test_result == 'failed':
-            failed_tcs.append(id, test_result)
+            failed_tcs.append(i(d, test_result))
         if test_result == 'error':
-            error_tcs.append(id, test_result)
+            error_tcs.append(i(d, test_result))
         if test_result == 'passed':
-            passed_tcs.append(id, test_result)
+            passed_tcs.append(i(d, test_result))
 
     print(f"\n=== {dist[0]} failed, {dist[1]} passed, {dist[2]} skipped, {dist[3]} error, {len(results)} total ===")
     for id, _ in failed_tcs:
