@@ -3,21 +3,53 @@ import sys
 import os
 import subprocess
 import shutil
-import warnings
+import io
+from contextlib import redirect_stdout, redirect_stderr
 
 
 global_counter = 1
-test_nodeid = None
+
+
+
+import unittest
+import io
+from contextlib import redirect_stdout, redirect_stderr
+
+class CustomTestResult(unittest.TextTestResult):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.excludes = list()
+
+    def startTest(self, test):
+        # Initialize buffers for capturing output
+        self.output_buffer = io.StringIO()
+        self.error_buffer = io.StringIO()
+        # Redirect stdout and stderr to the buffers
+        self._original_stdout = redirect_stdout(self.output_buffer)
+        self._original_stderr = redirect_stderr(self.error_buffer)
+        self._original_stdout.__enter__()
+        self._original_stderr.__enter__()
+        super().startTest(test)
+
+    def stopTest(self, test):
+        # Stop redirecting stdout and stderr
+        self._original_stdout.__exit__(None, None, None)
+        self._original_stderr.__exit__(None, None, None)
+        # Check the buffers for the specific message
+        if 'HTTP Error' in self.output_buffer.getvalue() or 'HTTP Error' in self.error_buffer.getvalue():
+            self.excludes.append(test.id())
+        super().stopTest(test)
+
 
 
 class TestResultCollector(unittest.TextTestResult):
     def __init__(self, stream, descriptions, verbosity):
         super().__init__(stream, descriptions, verbosity)
         self.test_results = list()
+        self.resultclass = CustomTestResult
 
     def addSuccess(self, test):
         self.test_results.append((test.id(), 'passed'))
-        warnings.warn("unable to download video info webpage: HTTP Error 410: Gone\nGone\nGone\nGone")
 
     def addSkip(self, test, reason):
         self.test_results.append((test.id(), 'skipped'))
@@ -41,11 +73,16 @@ class TestResultCollector(unittest.TextTestResult):
 
 
 def runUnittest() -> list:
-    results = unittest.TextTestRunner(resultclass=TestResultCollector).run(unittest.defaultTestLoader.discover('.')).test_results
-    dist = [0, 0, 0, 0] # failed | passed | skipped | error
+    runner = unittest.TextTestRunner(resultclass=TestResultCollector).run(unittest.defaultTestLoader.discover('.'))
+    results = runner.test_results
+    excludes = runner.resultclass.excludes
     failed_tcs = list()
     error_tcs = list()
+
+    dist = [0, 0, 0, 0] # failed | passed | skipped | error
     for id, test_result in results:
+        if id in excludes:
+            test_result = 'skipped'
         dist[0] += 1 if test_result == 'failed' else 0
         dist[1] += 1 if test_result == 'passed' else 0
         dist[2] += 1 if test_result == 'skipped' else 0
@@ -60,6 +97,7 @@ def runUnittest() -> list:
         print('FAILED', id)
     for id in error_tcs:
         print('E', id)
+    print(len(excludes))
     return results
 
 
