@@ -10,14 +10,10 @@ from contextlib import redirect_stdout, redirect_stderr
 global_counter = 1
 
 
-
-import unittest
-import io
-from contextlib import redirect_stdout, redirect_stderr
-
-class CustomTestResult(unittest.TextTestResult):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class TestResultCollector(unittest.TextTestResult):
+    def __init__(self, stream, descriptions, verbosity):
+        super().__init__(stream, descriptions, verbosity)
+        self.test_results = list()
         self.excludes = list()
 
     def startTest(self, test):
@@ -39,14 +35,6 @@ class CustomTestResult(unittest.TextTestResult):
         if 'HTTP Error' in self.output_buffer.getvalue() or 'HTTP Error' in self.error_buffer.getvalue():
             self.excludes.append(test.id())
         super().stopTest(test)
-
-
-
-class TestResultCollector(unittest.TextTestResult):
-    def __init__(self, stream, descriptions, verbosity):
-        super().__init__(stream, descriptions, verbosity)
-        self.test_results = list()
-        self.resultclass = CustomTestResult
 
     def addSuccess(self, test):
         self.test_results.append((test.id(), 'passed'))
@@ -75,7 +63,7 @@ class TestResultCollector(unittest.TextTestResult):
 def runUnittest() -> list:
     runner = unittest.TextTestRunner(resultclass=TestResultCollector).run(unittest.defaultTestLoader.discover('.'))
     results = runner.test_results
-    excludes = runner.resultclass.excludes
+    excludes = runner.excludes
     failed_tcs = list()
     error_tcs = list()
 
