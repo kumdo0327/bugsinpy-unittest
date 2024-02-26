@@ -66,6 +66,7 @@ def runUnittest() -> list:
     excludes = runner.excludes
     failed_tcs = list()
     error_tcs = list()
+    passed_tcs = list()
 
     dist = [0, 0, 0, 0] # failed | passed | skipped | error
     for id, test_result in results:
@@ -76,17 +77,19 @@ def runUnittest() -> list:
         dist[2] += 1 if test_result == 'skipped' else 0
         dist[3] += 1 if test_result == 'error' else 0
         if test_result == 'failed':
-            failed_tcs.append(id)
+            failed_tcs.append(id, test_result)
         if test_result == 'error':
-            error_tcs.append(id)
+            error_tcs.append(id, test_result)
+        if test_result == 'passed':
+            passed_tcs.append(id, test_result)
 
     print(f"\n=== {dist[0]} failed, {dist[1]} passed, {dist[2]} skipped, {dist[3]} error, {len(results)} total ===")
-    for id in failed_tcs:
+    for id, _ in failed_tcs:
         print('FAILED', id)
-    for id in error_tcs:
+    for id, _ in error_tcs:
         print('E', id)
     print(len(excludes))
-    return results
+    return failed_tcs + error_tcs + passed_tcs
 
 
 
