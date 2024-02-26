@@ -32,7 +32,7 @@ class TestResultCollector(unittest.TextTestResult):
         self._original_stdout.__exit__(None, None, None)
         self._original_stderr.__exit__(None, None, None)
         # Check the buffers for the specific message
-        if 'HTTP Error' in self.output_buffer.getvalue() or 'HTTP Error' in self.error_buffer.getvalue():
+        if 'http error' in self.output_buffer.getvalue().lower() or 'http error' in self.error_buffer.getvalue().lower():
             self.excludes.append(test.id())
         super().stopTest(test)
 
@@ -93,10 +93,12 @@ def runUnittest() -> list:
 def commandCoverage(test_id, omission, text):
     global global_counter
 
-    print(f'\n===> ExitCode is {text}')
-    print(f'===> Run Coverage {global_counter} : "{test_id}"')
+    print('\n=============================================')
+    print(f'=> ExitCode is {text}')
+    print(f'=> Run Coverage {global_counter} : "{test_id}"')
     subprocess.run(['coverage', 'run', '-m', 'unittest', '-q', test_id])
-    print(f'\n===> Wrote Json {global_counter} : "{test_id}"')
+    print(f'=> Wrote Json {global_counter} : "{test_id}"')
+    print('=============================================\n')
     subprocess.run(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', '--omit', omission])
     
     if os.path.exists(f'coverage/{global_counter}/summary.json'):
