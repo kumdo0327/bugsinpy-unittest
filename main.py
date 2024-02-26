@@ -31,9 +31,11 @@ class TestResultCollector(unittest.TextTestResult):
         self.test_results.append((test.id(), 'error'))
 
     def detectUnsolvableError(self, msg: str) -> bool:
+        print('\n>\tBEGIN')
         print('===============================================')
         print(msg)
         print('===============================================')
+        print('>\tEND\n')
         return 'Unable to download' in msg or 'Unable to extract title' in msg
 
 
