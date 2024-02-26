@@ -119,6 +119,7 @@ def runUnittest() -> list:
         print('FAILED', id)
     for id in error_tcs:
         print('E', id)
+    print(len(warnings))
     return results
 
 
