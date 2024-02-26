@@ -43,20 +43,20 @@ class TestResultCollector(unittest.TextTestResult):
         self.test_results.append((test.id(), 'skipped'))
 
     def addFailure(self, test, err):
-        if self.detectUnsolvableError(self._exc_info_to_string(err, test)):
+        if self.detectUnsolvableError(self._exc_info_to_string(err, test).lower()):
             self.test_results.append((test.id(), 'skipped'))
         else:
             self.test_results.append((test.id(), 'failed'))
 
     def addError(self, test, err):
-        if self.detectUnsolvableError(self._exc_info_to_string(err, test)):
+        if self.detectUnsolvableError(self._exc_info_to_string(err, test).lowe()):
             self.test_results.append((test.id(), 'skipped'))
         else:
             self.test_results.append((test.id(), 'error'))
 
     def detectUnsolvableError(self, msg: str) -> bool:
-        return 'Unable to download' in msg or\
-                'Unable to extract' in msg
+        return 'unable to download' in msg or\
+                'unable to extract' in msg
 
 
 
@@ -94,7 +94,7 @@ def commandCoverage(test_id, omission, text):
     global global_counter
 
     print(f'\n===> ExitCode is {text}')
-    print(f'\n===> Run Coverage {global_counter} : "{test_id}"')
+    print(f'===> Run Coverage {global_counter} : "{test_id}"')
     subprocess.run(['coverage', 'run', '-m', 'unittest', '-q', test_id])
     print(f'\n===> Wrote Json {global_counter} : "{test_id}"')
     subprocess.run(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', '--omit', omission])
