@@ -57,6 +57,7 @@ class TestResultCollector(unittest.TextTestResult):
     def detectUnsolvableError(self, msg: str) -> bool:
         return 'unable to download' in msg or\
                 'unable to extract' in msg or\
+                'unable to get token' in msg or\
                 'please report this issue on https://yt-dl.org/bug' in msg
 
 
@@ -67,7 +68,7 @@ def runUnittest() -> list:
     excludes = runner.excludes
     failed_tcs = list()
     error_tcs = list()
-    passed_tcs = list()
+    ret = list()
 
     dist = [0, 0, 0, 0] # failed | passed | skipped | error
     for id, test_result in results:
@@ -78,19 +79,19 @@ def runUnittest() -> list:
         dist[2] += 1 if test_result == 'skipped' else 0
         dist[3] += 1 if test_result == 'error' else 0
         if test_result == 'failed':
-            failed_tcs.append((id, test_result))
+            failed_tcs.append(id)
         if test_result == 'error':
-            error_tcs.append((id, test_result))
-        if test_result == 'passed':
-            passed_tcs.append((id, test_result))
+            error_tcs.append(id)
+        ret.append((id, test_result))
+        
 
     print(f"\n=== {dist[0]} failed, {dist[1]} passed, {dist[2]} skipped, {dist[3]} error, {len(results)} total ===")
-    for id, _ in failed_tcs:
+    for id in failed_tcs:
         print('FAILED', id)
-    for id, _ in error_tcs:
+    for id in error_tcs:
         print('E', id)
     print(len(excludes))
-    return failed_tcs + error_tcs + passed_tcs
+    return ret
 
 
 
