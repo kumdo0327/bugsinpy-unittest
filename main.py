@@ -31,6 +31,7 @@ def runUnittest() -> list:
     results = unittest.TextTestRunner(resultclass=TestResultCollector).run(unittest.defaultTestLoader.discover('.')).test_results
     dist = [0, 0, 0, 0] # failed | passed | skipped | error
     failed_tcs = list()
+    error_tcs = list()
     for id, test_result in results:
         dist[0] += 1 if test_result == 'failed' else 0
         dist[1] += 1 if test_result == 'passed' else 0
@@ -38,10 +39,14 @@ def runUnittest() -> list:
         dist[3] += 1 if test_result == 'error' else 0
         if test_result == 'failed':
             failed_tcs.append(id)
+        if test_result == 'error':
+            error_tcs.append(id)
 
     print(f"\n=== {dist[0]} failed, {dist[1]} passed, {dist[2]} skipped, {dist[3]} error, {len(results)} total ===")
     for id in failed_tcs:
         print('FAILED', id)
+    for id in error_tcs:
+        print('E', id)
     return results
 
 
