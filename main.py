@@ -94,10 +94,10 @@ def commandCoverage(test_id, omission, text):
     global global_counter
 
     print('\n=============================================')
-    print(f'=> ExitCode is {text}')
-    print(f'=> Run Coverage {global_counter} : "{test_id}"')
+    print(f'=> {text} -Exitcode')
+    print(f'=> [ {global_counter} ] : "{test_id}" -Run')
     subprocess.run(['coverage', 'run', '-m', 'unittest', '-q', test_id])
-    print(f'=> Wrote Json {global_counter} : "{test_id}"')
+    print(f'=> [ {global_counter} ] : "{test_id}" -Write')
     print('=============================================\n')
     subprocess.run(['coverage', 'json', '-o', f'coverage/{global_counter}/summary.json', '--omit', omission])
     
