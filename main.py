@@ -58,7 +58,6 @@ class TestResultCollector(unittest.TextTestResult):
         return 'unable to download' in msg or\
                 'unable to extract' in msg or\
                 'unable to get token' in msg or\
-                "has no attribute 'protocol_sslv3'" in msg or\
                 'please report this issue on https://yt-dl.org/bug' in msg
 
 
